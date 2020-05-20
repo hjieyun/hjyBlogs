@@ -87,14 +87,10 @@
 <meta property="og:site_name" content="hjyBlog">
 <meta property="og:description" content="EasyCode是IDEA的一个插件，可根据数据库的表结构，生成对应的功能代码。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/EasyCodeInstall.png">
-<meta property="og:image" content="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/databaseConnet.png">
-<meta property="og:image" content="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/codeProduct.png">
-<meta property="og:updated_time" content="2020-05-19T10:29:35.025Z">
+<meta property="og:updated_time" content="2020-05-19T10:55:49.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EasyCode代码生成">
 <meta name="twitter:description" content="EasyCode是IDEA的一个插件，可根据数据库的表结构，生成对应的功能代码。">
-<meta name="twitter:image" content="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/EasyCodeInstall.png">
 
 
 
@@ -326,10 +322,541 @@
       
         <p>EasyCode是IDEA的一个插件，可根据数据库的表结构，生成对应的功能代码。</p>
 <a id="more"></a>
-<h3 id="安装EasyCode"><a href="#安装EasyCode" class="headerlink" title="安装EasyCode"></a>安装EasyCode</h3><p>搜索并安装插件<br><img src="/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/EasyCodeInstall.png" alt=""></p>
-<h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><p>创建好数据库，建表后，连接数据库<br><img src="/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/databaseConnet.png" alt=""></p>
-<h3 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h3><p>选择要生成代码的表，右键后选择EasyCode –&gt; Generate Code<br><img src="/hjyBlogs/hjyBlogs/2020/05/19/EasyCode代码生成/img/easaycode/codeProduct.png" alt=""></p>
+<h3 id="安装EasyCode"><a href="#安装EasyCode" class="headerlink" title="安装EasyCode"></a>安装EasyCode</h3><p>在idea搜索并安装Easy Code插件</p>
+<h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><p>创建好数据库，建表后，连接数据库，点击idea的 View–&gt;tool Windows–&gt;database,选择数据库类型后输入数据库链接进行连接</p>
+<h3 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h3><p>连接成功后，选择要生成代码的表，右键后选择EasyCode –&gt; Generate Code</p>
+<h3 id="自定义生成文件"><a href="#自定义生成文件" class="headerlink" title="自定义生成文件"></a>自定义生成文件</h3><p>默认生成的代码不可能完全符合每个人的要求，可在easy Code插件自定义生成的文件，以下是我常用的文件</p>
+<h4 id="request-java"><a href="#request-java" class="headerlink" title="request.java"></a>request.java</h4><pre><code>##引入宏定义
+$!define
 
+##设置回调
+$!callback.setFileName($tool.append($!{tableInfo.name}, &quot;Request.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/request&quot;))
+
+##使用宏定义设置包后缀
+#setPackageSuffix(&quot;request&quot;)
+
+##使用全局变量实现默认包导入
+$!autoImport
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+
+##使用宏定义实现类注释信息
+#tableComment(&quot;实体类&quot;)
+@Data
+public class $!{tableInfo.name}Request {
+
+#foreach($column in $tableInfo.fullColumn)
+    #if(${column.comment})/**
+    * ${column.comment}
+    */#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+
+    public $!{tableInfo.name} toEvent() {
+        $!{tableInfo.name} $!tool.firstLowerCase($tableInfo.name) = new $!{tableInfo.name}();
+        BeanUtils.copyProperties(this, $!tool.firstLowerCase($tableInfo.name));
+        return $!tool.firstLowerCase($tableInfo.name);
+    }
+
+
+}
+</code></pre><h4 id="entity-java"><a href="#entity-java" class="headerlink" title="entity.java"></a>entity.java</h4><pre><code>##引入宏定义
+$!define
+
+##设置回调
+$!callback.setFileName($tool.append($!{tableInfo.name}, &quot;.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/entity&quot;))
+
+##使用宏定义设置包后缀
+#setPackageSuffix(&quot;entity&quot;)
+
+##使用全局变量实现默认包导入
+$!autoImport
+import lombok.Data;
+
+##使用宏定义实现类注释信息
+#tableComment(&quot;实体类&quot;)
+@Data
+public class $!{tableInfo.name}{
+
+#foreach($column in $tableInfo.fullColumn)
+    #if(${column.comment})/**
+    * ${column.comment}o
+    */#end
+
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+
+
+}
+</code></pre><h4 id="controller-java"><a href="#controller-java" class="headerlink" title="controller.java"></a>controller.java</h4><pre><code>##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, &quot;Controller&quot;))
+##设置回调
+$!callback.setFileName($tool.append($tableName, &quot;.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/controller&quot;))
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}controller;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.request.$!{tableInfo.name}Request;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * description : $!{tableInfo.comment}($!{tableInfo.name})表控制层
+ *
+ * @author $!author
+ * @since  $!time.currTime()
+ */
+@RestController
+public class $!{tableName} {
+    /**
+     * 服务对象
+     */
+    @Resource
+    private $!{tableInfo.name}Service $!tool.firstLowerCase($tableInfo.name)Service;
+
+     /**
+     * 通过主键查询数据
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = &quot;/$!{tool.firstLowerCase($tableInfo.name)}&quot;, method = RequestMethod.GET)
+    public Map&lt;String,Object&gt; select(@Valid $!{tableInfo.name}Request request) {
+        Map&lt;String,Object&gt; response = new HashMap&lt;&gt;();
+        $!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name})  = this.$!{tool.firstLowerCase($tableInfo.name)}Service.queryById(request.toEvent().getId());
+        if($!tool.firstLowerCase($!{tableInfo.name}) != null){
+            response.put(&quot;code&quot;,&quot;0000&quot;);
+            response.put(&quot;msg&quot;,&quot;交易成功&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,$!tool.firstLowerCase($!{tableInfo.name}));
+        }else{
+            response.put(&quot;code&quot;,&quot;000&quot;);
+            response.put(&quot;msg&quot;,&quot;查询不到数据&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,null);
+        }
+        return response;
+    }
+
+     /**
+     * 新增数据
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = &quot;/$!{tool.firstLowerCase($tableInfo.name)}&quot;, method = RequestMethod.POST)
+    public @ResponseBody
+    Map&lt;String,Object&gt; saveEmChainEntityMapping(@RequestBody @Valid $!{tableInfo.name}Request request) {
+        Map&lt;String,Object&gt; response = new HashMap&lt;&gt;();
+        $!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}) =  $!{tool.firstLowerCase($tableInfo.name)}Service.insert(request.toEvent());
+        if($!tool.firstLowerCase($!{tableInfo.name}) != null){
+            response.put(&quot;code&quot;,&quot;0000&quot;);
+            response.put(&quot;msg&quot;,&quot;交易成功&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,$!tool.firstLowerCase($!{tableInfo.name}));
+        }else{
+            response.put(&quot;code&quot;,&quot;888&quot;);
+            response.put(&quot;msg&quot;,&quot;交易异常&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,null);
+        }
+        return response;
+    }
+
+     /**
+     * 修改数据
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = &quot;/$!{tool.firstLowerCase($tableInfo.name)}&quot;, method = RequestMethod.PUT)
+    public @ResponseBody
+    Map&lt;String,Object&gt; updateEmChainEntityMapping(@RequestBody @Valid $!{tableInfo.name}Request request) {
+        Map&lt;String,Object&gt; response = new HashMap&lt;&gt;();
+        $!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}) = $!{tool.firstLowerCase($tableInfo.name)}Service.update(request.toEvent());
+
+        if($!tool.firstLowerCase($!{tableInfo.name}) != null){
+            response.put(&quot;code&quot;,&quot;0000&quot;);
+            response.put(&quot;msg&quot;,&quot;交易成功&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,$!tool.firstLowerCase($!{tableInfo.name}));
+        }else{
+            response.put(&quot;code&quot;,&quot;888&quot;);
+            response.put(&quot;msg&quot;,&quot;交易异常&quot;);
+            response.put(&quot;$!tool.firstLowerCase($!{tableInfo.name})&quot;,null);
+        }
+
+        return response;
+    }
+
+    /**
+     * 删除数据
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = &quot;/$!{tool.firstLowerCase($tableInfo.name)}&quot;, method = RequestMethod.DELETE)
+    public @ResponseBody
+    Map&lt;String,Object&gt; deleteEmChainEntityMapping(@Valid $!{tableInfo.name}Request request) {
+        Map&lt;String,Object&gt; response = new HashMap&lt;&gt;();
+        boolean result = $!{tool.firstLowerCase($tableInfo.name)}Service.deleteById(request.toEvent().getId());
+        if(result){
+            response.put(&quot;code&quot;,&quot;0000&quot;);
+            response.put(&quot;msg&quot;,&quot;交易成功&quot;);
+        }else{
+            response.put(&quot;code&quot;,&quot;8888&quot;);
+            response.put(&quot;msg&quot;,&quot;服务异常&quot;);
+        }
+        return response;
+    }
+
+
+
+   /**
+     * 查询数据
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = &quot;/$!{tool.firstLowerCase($tableInfo.name)}/selectAll&quot;, method = RequestMethod.GET)
+    public @ResponseBody
+    Map&lt;String,Object&gt; selectAll(@Valid $!{tableInfo.name}Request request) {
+        Map&lt;String,Object&gt; response = new HashMap&lt;&gt;();
+        List&lt;$!{tableInfo.name}&gt; results = this.$!{tool.firstLowerCase($tableInfo.name)}Service.queryAll(request.toEvent());     
+        response.put(&quot;code&quot;,&quot;0000&quot;);
+        response.put(&quot;msg&quot;,&quot;交易成功&quot;);
+        response.put(&quot;results&quot;,results);
+        if(results.size() == 0 ){
+            response.put(&quot;msg&quot;,&quot;数据为空&quot;);
+        }
+        return response;
+    }
+
+}
+</code></pre><h4 id="service-java"><a href="#service-java" class="headerlink" title="service.java"></a>service.java</h4><pre><code>##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, &quot;Service&quot;))
+##设置回调
+$!callback.setFileName($tool.append($tableName, &quot;.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/service&quot;))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import java.util.List;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务接口
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+public interface $!{tableName} {
+
+    /**
+     * 通过ID查询数据
+     * @param $!pk.name 主键
+     * @return 实例对象
+     */
+    $!{tableInfo.name} queryById($!pk.shortType $!pk.name);
+
+     /**
+     * 条件查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    List&lt;$!{tableInfo.name}&gt; queryAll($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 分页查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    List&lt;$!{tableInfo.name}&gt; queryPage($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 新增数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    $!{tableInfo.name} insert($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 修改数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    $!{tableInfo.name} update($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 通过主键删除数据
+     * @param $!pk.name 主键
+     * @return 是否成功
+     */
+    boolean deleteById($!pk.shortType $!pk.name);
+
+}
+</code></pre><h4 id="serviceImpl-java"><a href="#serviceImpl-java" class="headerlink" title="serviceImpl.java"></a>serviceImpl.java</h4><pre><code>##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, &quot;ServiceImpl&quot;))
+##设置回调
+$!callback.setFileName($tool.append($tableName, &quot;.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/service/impl&quot;))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service.impl;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务实现类
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Service(&quot;$!tool.firstLowerCase($!{tableInfo.name})Service&quot;)
+public class $!{tableName} implements $!{tableInfo.name}Service {
+    @Resource
+    private $!{tableInfo.name}Mapper $!tool.firstLowerCase($!{tableInfo.name})Mapper;
+
+    /**
+     * 通过ID查询数据
+     * @param $!pk.name 主键
+     * @return 实例对象
+     */
+    @Override
+    public $!{tableInfo.name} queryById($!pk.shortType $!pk.name) {
+        return this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.queryById($!pk.name);
+    }
+
+    /**
+     * 条件查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    @Override
+    public List&lt;$!{tableInfo.name}&gt; queryAll($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name})) {
+        return this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.queryAll($!tool.firstLowerCase($!{tableInfo.name}));
+    }
+
+     /**
+     * 分页查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    @Override
+    public List&lt;$!{tableInfo.name}&gt; queryPage($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name})) {
+        return this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.queryPage($!tool.firstLowerCase($!{tableInfo.name}));
+    }
+
+    /**
+     * 新增数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    @Override
+    public $!{tableInfo.name} insert($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name})) {
+        this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.insert($!tool.firstLowerCase($!{tableInfo.name}));
+        return $!tool.firstLowerCase($!{tableInfo.name});
+    }
+
+    /**
+     * 修改数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    @Override
+    public $!{tableInfo.name} update($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name})) {
+        this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.update($!tool.firstLowerCase($!{tableInfo.name}));
+        return this.queryById($!{tool.firstLowerCase($!{tableInfo.name})}.get$!tool.firstUpperCase($pk.name)());
+    }
+
+    /**
+     * 通过主键删除数据
+     * @param $!pk.name 主键
+     * @return 是否成功
+     */
+    @Override
+    public boolean deleteById($!pk.shortType $!pk.name) {
+        return this.$!{tool.firstLowerCase($!{tableInfo.name})}Mapper.deleteById($!pk.name) &gt; 0;
+    }
+}
+</code></pre><h4 id="mapper-java"><a href="#mapper-java" class="headerlink" title="mapper.java"></a>mapper.java</h4><pre><code>##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, &quot;Mapper&quot;))
+##设置回调
+$!callback.setFileName($tool.append($tableName, &quot;.java&quot;))
+$!callback.setSavePath($tool.append($tableInfo.savePath, &quot;/mapper&quot;))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}mapper;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表数据库访问层
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+ @Mapper
+public interface $!{tableName} {
+
+    /**
+     * 通过ID查询
+     * @param $!pk.name 主键
+     * @return 实例对象
+     */
+    $!{tableInfo.name} queryById($!pk.shortType $!pk.name);
+
+    /**
+     * 条件查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    List&lt;$!{tableInfo.name}&gt; queryAll($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+
+     /**
+     * 分页查询
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 对象列表
+     */
+    List&lt;$!{tableInfo.name}&gt; queryPage($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 新增数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 影响行数
+     */
+    int insert($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 修改数据
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 影响行数
+     */
+    int update($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 通过主键删除数据
+     * @param $!pk.name 主键
+     * @return 影响行数
+     */
+    int deleteById($!pk.shortType $!pk.name);
+
+}
+</code></pre><h4 id="mapper-xml"><a href="#mapper-xml" class="headerlink" title="mapper.xml"></a>mapper.xml</h4><pre><code>##引入mybatis支持
+$!mybatisSupport
+
+##设置保存名称与保存位置
+$!callback.setFileName($tool.append($!{tableInfo.name}, &quot;Mapper.xml&quot;))
+$!callback.setSavePath($tool.append($modulePath, &quot;/src/main/resources/mapper&quot;))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;$!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper&quot;&gt;
+
+    &lt;sql id = &quot;baseColumns&quot;&gt;
+        #allSqlColumn()
+
+    &lt;/sql&gt;
+
+    &lt;sql id = &quot;whereClause&quot;&gt;
+        &lt;where&gt;
+#foreach($column in $tableInfo.fullColumn)
+            &lt;if test=&quot;$!column.name != null#if($column.type.equals(&quot;java.lang.String&quot;)) and $!column.name != &apos;&apos;#end&quot;&gt;
+                and $!column.obj.name = #{$!column.name}
+            &lt;/if&gt;
+#end
+        &lt;/where&gt;  
+    &lt;/sql&gt;
+
+    &lt;select id=&quot;queryById&quot; resultType=&quot;$!{tableInfo.savePackageName}.entity.$!{tableInfo.name}&quot;&gt;
+        select
+          &lt;include refid=&quot;baseColumns&quot; /&gt;
+        from 
+            $!{tableInfo.obj.parent.name}.$!tableInfo.obj.name
+        where 
+            $!pk.obj.name = #{$!pk.name}
+    &lt;/select&gt;
+
+    &lt;!-- 条件查询 --&gt;
+    &lt;select id=&quot;queryAll&quot; resultType=&quot;$!{tableInfo.savePackageName}.entity.$!{tableInfo.name}&quot;&gt;
+        select
+          &lt;include refid=&quot;baseColumns&quot; /&gt;
+        from 
+            $!{tableInfo.obj.parent.name}.$!tableInfo.obj.name
+        &lt;include refid=&quot;whereClause&quot; /&gt;
+    &lt;/select&gt;
+
+    &lt;!-- 分页查询 --&gt;
+    &lt;select id=&quot;queryPage&quot; resultType=&quot;$!{tableInfo.savePackageName}.entity.$!{tableInfo.name}&quot;&gt;
+        select
+           &lt;include refid=&quot;baseColumns&quot; /&gt;
+        from 
+            $!{tableInfo.obj.parent.name}.$!tableInfo.obj.name
+        &lt;include refid=&quot;whereClause&quot; /&gt;
+        LIMIT #{limit} OFFSET #{offset}
+    &lt;/select&gt;
+
+    &lt;!--新增所有列--&gt;
+    &lt;insert id=&quot;insert&quot; keyProperty=&quot;$!pk.name&quot; useGeneratedKeys=&quot;true&quot;&gt;
+        insert into $!{tableInfo.obj.parent.name}.$!{tableInfo.obj.name}
+            (#foreach($column in $tableInfo.fullColumn)$!column.obj.name#if($velocityHasNext), #end#end)
+        values (
+            #foreach($column in $tableInfo.fullColumn)
+    #{$!{column.name}}#if($velocityHasNext),
+            #end#end)
+    &lt;/insert&gt;
+
+    &lt;!--通过主键修改数据--&gt;
+    &lt;update id=&quot;update&quot;&gt;
+        update $!{tableInfo.obj.parent.name}.$!{tableInfo.obj.name}
+        &lt;set&gt;
+#foreach($column in $tableInfo.otherColumn)
+            &lt;if test=&quot;$!column.name != null#if($column.type.equals(&quot;java.lang.String&quot;)) and $!column.name != &apos;&apos;#end&quot;&gt;
+                $!column.obj.name = #{$!column.name},
+            &lt;/if&gt;
+#end
+        &lt;/set&gt;
+        where $!pk.obj.name = #{$!pk.name}
+    &lt;/update&gt;
+
+    &lt;!--通过主键删除--&gt;
+    &lt;delete id=&quot;deleteById&quot;&gt;
+        delete from $!{tableInfo.obj.parent.name}.$!{tableInfo.obj.name} where $!pk.obj.name = #{$!pk.name}
+    &lt;/delete&gt;
+
+&lt;/mapper&gt;
+</code></pre>
       
     </div>
     
@@ -466,7 +993,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -499,7 +1026,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装EasyCode"><span class="nav-number">1.</span> <span class="nav-text">安装EasyCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接数据库"><span class="nav-number">2.</span> <span class="nav-text">连接数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码生成"><span class="nav-number">3.</span> <span class="nav-text">代码生成</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装EasyCode"><span class="nav-number">1.</span> <span class="nav-text">安装EasyCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接数据库"><span class="nav-number">2.</span> <span class="nav-text">连接数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码生成"><span class="nav-number">3.</span> <span class="nav-text">代码生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义生成文件"><span class="nav-number">4.</span> <span class="nav-text">自定义生成文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#request-java"><span class="nav-number">4.1.</span> <span class="nav-text">request.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#entity-java"><span class="nav-number">4.2.</span> <span class="nav-text">entity.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#controller-java"><span class="nav-number">4.3.</span> <span class="nav-text">controller.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#service-java"><span class="nav-number">4.4.</span> <span class="nav-text">service.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#serviceImpl-java"><span class="nav-number">4.5.</span> <span class="nav-text">serviceImpl.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mapper-java"><span class="nav-number">4.6.</span> <span class="nav-text">mapper.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mapper-xml"><span class="nav-number">4.7.</span> <span class="nav-text">mapper.xml</span></a></li></ol></li></ol></div>
             
 
           </div>
