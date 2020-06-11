@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android,ndk,">
+  <meta name="keywords" content="java,thread pool,线程池,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
-<meta name="keywords" content="android,ndk">
+<meta name="description" content="为什么要使用线程池在多线程运行期间，系统不断的启动和关闭新线程，成本非常高。以及过渡消耗系统资源。有过渡切换线程的危险，从而可能导致系统资源的崩溃。这时，使用线程池是最好的选择。本篇文章主页讲述线程池的基本使用，具体的深入学习后续进行补充。">
+<meta name="keywords" content="java,thread pool,线程池">
 <meta property="og:type" content="article">
-<meta property="og:title" content="android-NDK学习">
-<meta property="og:url" content="https://hjieyun.github.io/hjyBlogs/2019/03/18/android-NDK学习/index.html">
+<meta property="og:title" content="线程池的基本使用">
+<meta property="og:url" content="https://hjieyun.github.io/hjyBlogs/2020/05/20/线程池的基本使用/index.html">
 <meta property="og:site_name" content="hjyBlog">
-<meta property="og:description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
+<meta property="og:description" content="为什么要使用线程池在多线程运行期间，系统不断的启动和关闭新线程，成本非常高。以及过渡消耗系统资源。有过渡切换线程的危险，从而可能导致系统资源的崩溃。这时，使用线程池是最好的选择。本篇文章主页讲述线程池的基本使用，具体的深入学习后续进行补充。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-05-20T01:53:30.055Z">
+<meta property="og:updated_time" content="2020-05-20T07:55:28.637Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="android-NDK学习">
-<meta name="twitter:description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
+<meta name="twitter:title" content="线程池的基本使用">
+<meta name="twitter:description" content="为什么要使用线程池在多线程运行期间，系统不断的启动和关闭新线程，成本非常高。以及过渡消耗系统资源。有过渡切换线程的危险，从而可能导致系统资源的崩溃。这时，使用线程池是最好的选择。本篇文章主页讲述线程池的基本使用，具体的深入学习后续进行补充。">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://hjieyun.github.io/hjyBlogs/2019/03/18/android-NDK学习/">
+  <link rel="canonical" href="https://hjieyun.github.io/hjyBlogs/2020/05/20/线程池的基本使用/">
 
 
 
 
 
-  <title>android-NDK学习 | hjyBlog</title>
+  <title>线程池的基本使用 | hjyBlog</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2019/03/18/android-NDK学习/">
+    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2020/05/20/线程池的基本使用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="hjy">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">android-NDK学习</h1>
+          <h1 class="post-title" itemprop="name headline">线程池的基本使用</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-18T10:22:23+08:00">
-                2019-03-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-20T10:16:29+08:00">
+                2020-05-20
               </time>
             
 
@@ -305,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hjyBlogs/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/hjyBlogs/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
                   </a>
                 </span>
 
@@ -342,74 +342,52 @@
       
 
       
-        <p>前几天开始学习andoid的ndk开发，做的一个demo。主要参考了<a href="https://blog.csdn.net/young_time/article/details/80346631" target="_blank" rel="noopener">Young_Time的文档</a></p>
+        <h3 id="为什么要使用线程池"><a href="#为什么要使用线程池" class="headerlink" title="为什么要使用线程池"></a>为什么要使用线程池</h3><p>在多线程运行期间，系统不断的启动和关闭新线程，成本非常高。以及过渡消耗系统资源。有过渡切换线程的危险，从而可能导致系统资源的崩溃。这时，使用线程池是最好的选择。本篇文章主页讲述线程池的基本使用，具体的深入学习后续进行补充。</p>
 <a id="more"></a>
-<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p>  1、ndk的环境配置很简单，在Android studio中加载 NDK 和 LLDB 插件。</p>
-<p>  2、下载完成后，打开 File – Project Structure – SDK Location，然后选择 Android NDK location，点击 Select default NDK ，选择ndk路径即可。</p>
-<p>  3、打开 File – Settings – Plugins，将 Android NDK Support 后面的勾去掉，重启Android studio.</p>
-<h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><p>  1、创建native方法接口</p>
-<pre><code>public class JNITest {
+<h3 id="线程池的基本使用"><a href="#线程池的基本使用" class="headerlink" title="线程池的基本使用"></a>线程池的基本使用</h3><pre><code>//核心线程池数量
+private static final int corePoolSize = 48;
 
-public native static String get();
+//最大线程池数量
+private static final int maximumPoolSize = 48;
 
-public native static int set(int a);
+//非核心线程池存活时间
+private static final long keepAliveTime = 10 * 1000;
 
-}
-</code></pre><p>  2、选择 build – make project 生成 JNITest.class文件， 并且进入项目的  app\build\intermediates\classes\debug\ 下找到JNITest.class文件</p>
-<p>  3、使用android命令管理工具Terminal，进入app/src/main路径，使用以下语句生成 .h文件</p>
-<pre><code>javah -d jni -classpath D:\environment\Workspace\Android\androidWorkspace_practice\HJY_Demo_20181227\app\build\intermediates\classes\debug com.demo.hjydemo.common.jni.JNITest
-</code></pre><p>  javah ：   生成头文件</p>
-<p>  -d jni ：  当前目录下创建一个 jni 文件夹</p>
-<p>  D:\ … \debug ：    debug文件所在本地文件路径（路径很长，可以在项目中复制路径）</p>
-<p>  com.demo.hjydemo.common.jni.JNITest ：   JNITest.java所在路径</p>
-<p>  4、 执行语句后会在 app\src\main\jni 路径生成一个c语言的头文件com_demo_hjydemo_common_jni_JNITest.h，在该路径下创建一个 c/c++ resource 文件 test.c。并从com_demo_hjydemo_common_jni_JNITest.h文件复制方法到test.c中实现其逻辑。</p>
-<pre><code>#include&lt;jni.h&gt;
-#include&lt;stdio.h&gt;
-//导入我们创建的头文件
-#include &quot;com_demo_hjydemo_common_jni_JNITest.h&quot;
+ExecutorService fixedThreadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;());
+fixedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                //执行逻辑
+            }
+        });
+</code></pre><h3 id="构造线程池的参数"><a href="#构造线程池的参数" class="headerlink" title="构造线程池的参数"></a>构造线程池的参数</h3><h4 id="corePoolSize-gt-核心线程数量"><a href="#corePoolSize-gt-核心线程数量" class="headerlink" title="corePoolSize =&gt; 核心线程数量"></a>corePoolSize =&gt; 核心线程数量</h4><p>线程池新建线程的时候，如果当前线程总数小于corePoolSize，则新建的是核心线程，如果超过corePoolSize，则新建的是非核心线程<br>核心线程默认情况下会一直存活在线程池中，即使这个核心线程啥也不干(闲置状态)。<br>如果指定ThreadPoolExecutor的allowCoreThreadTimeOut这个属性为true，那么核心线程如果不干活(闲置状态)的话，超过一定时间(时长下面参数决定)，就会被销毁掉</p>
+<h4 id="maximumPoolSize-gt-最大线程数量"><a href="#maximumPoolSize-gt-最大线程数量" class="headerlink" title="maximumPoolSize =&gt; 最大线程数量"></a>maximumPoolSize =&gt; 最大线程数量</h4><h4 id="keepAliveTime-gt-核心线程闲置超时时长"><a href="#keepAliveTime-gt-核心线程闲置超时时长" class="headerlink" title="keepAliveTime =&gt; 核心线程闲置超时时长"></a>keepAliveTime =&gt; 核心线程闲置超时时长</h4><p>一个非核心线程，如果处于闲置状态的时长超过这个参数所设定的时长，就会被销毁掉</p>
+<p>####.unit =&gt; keepAliveTime的单位<br>TimeUnit是一个枚举类型，其包括：</p>
+<ul>
+<li>NANOSECONDS ： 1微毫秒 = 1微秒 / 1000</li>
+<li>MICROSECONDS ： 1微秒 = 1毫秒 / 1000</li>
+<li>MILLISECONDS ： 1毫秒 = 1秒 /1000</li>
+<li>SECONDS ： 秒</li>
+<li>MINUTES ： 分</li>
+<li>HOURS ： 小时</li>
+<li>DAYS ： 天</li>
+</ul>
+<h4 id="workQueue-gt-任务队列"><a href="#workQueue-gt-任务队列" class="headerlink" title="workQueue =&gt; 任务队列"></a>workQueue =&gt; 任务队列</h4><p>用于存放提交但是尚未被执行的任务,我们可以选择如下几种：</p>
+<ul>
+<li>ArrayBlockingQueue：基于数组结构的有界阻塞队列，FIFO。</li>
+<li>LinkedBlockingQueue：基于链表结构的有界阻塞队列，FIFO。</li>
+<li>SynchronousQueue：不存储元素的阻塞队列，每个插入操作都必须等待一个移出操作，反之亦然。</li>
+<li>PriorityBlockingQueue：具有优先级别的阻塞队列。</li>
+</ul>
+<h4 id="threadFactory-gt-线程工厂，"><a href="#threadFactory-gt-线程工厂，" class="headerlink" title="threadFactory =&gt; 线程工厂，"></a>threadFactory =&gt; 线程工厂，</h4><p>用于创建线程，一般可以用默认的</p>
+<h4 id="handler-gt-拒绝策略，"><a href="#handler-gt-拒绝策略，" class="headerlink" title="handler =&gt; 拒绝策略，"></a>handler =&gt; 拒绝策略，</h4><p>所谓拒绝策略，是指将任务添加到线程池中时，线程池拒绝该任务所采取的相应策略。</p>
+<ul>
+<li>CallerRunsPolicy：线程调用运行该任务的 execute 本身。此策略提供简单的反馈控制机制，能够减缓新任务的提交速度。<br>public void rejectedExecution(Runnable r, ThreadPoolExecutor e) { if (!e.isShutdown()) { r.run(); }}<br>这个策略显然不想放弃执行任务。但是由于池中已经没有任何资源了，那么就直接使用调用该execute的线程本身来执行。（开始我总不想丢弃任务的执行，但是对某些应用场景来讲，很有可能造成当前线程也被阻塞。如果所有线程都是不能执行的，很可能导致程序没法继续跑了。需要视业务情景而定吧。）</li>
+<li>AbortPolicy：处理程序遭到拒绝将抛出运行时 RejectedExecutionException<br>public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {throw new RejectedExecutionException();}<br>这种策略直接抛出异常，丢弃任务。（jdk默认策略，队列满并线程满时直接拒绝添加新任务，并抛出异常，所以说有时候放弃也是一种勇气，为了保证后续任务的正常进行，丢弃一些也是可以接收的，记得做好记录）</li>
+<li>DiscardPolicy：不能执行的任务将被删除<br>public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {}<br>这种策略和AbortPolicy几乎一样，也是丢弃任务，只不过他不抛出异常。</li>
+<li>DiscardOldestPolicy：如果执行程序尚未关闭，则位于工作队列头部的任务将被删除，然后重试执行程序（如果再次失败，则重复此过程）<br>public void rejectedExecution(Runnable r, ThreadPoolExecutor e) { if (!e.isShutdown()) {e.getQueue().poll();e.execute(r); }}<br>该策略就稍微复杂一些，在pool没有关闭的前提下首先丢掉缓存在队列中的最早的任务，然后重新尝试运行该任务。这个策略需要适当小心。</li>
+</ul>
 
-
-//返回一个字符串
-JNIEXPORT jstring JNICALL Java_com_demo_hjydemo_common_jni_JNITest_get
-(JNIEnv *env, jclass jclass){
-    return (*env)-&gt;NewStringUTF(env,&quot;This is my first NDK Application&quot;);
-}
-
-
-//传入数字+1
-JNIEXPORT jint JNICALL Java_com_demo_hjydemo_common_jni_JNITest_set
-(JNIEnv *env, jclass jclass,jint a){
-
-return a+1;
-
-}
-</code></pre><p>  5、然后在app\src\main\jni目录下创建两个.mk文件。</p>
-<p>  一个 Android.mk:</p>
-<pre><code>LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := JNITest
-LOCAL_SRC_FILES := test.c
-include $(BUILD_SHARED_LIBRARY)
-</code></pre><p>  一个是 Application.mk：</p>
-<pre><code>APP_ABI := all
-</code></pre><p>  6、打开 Terminal，到 app/src/main/jni 目录下，使用 ndk-build 命令生成 so 库：</p>
-<pre><code>ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application APP_BUILD_SCRIPT=Android
-</code></pre><p>  7、在创建的JNITest中导入so库</p>
-<pre><code>public class JNITest {
-
-// 动态导入 so 库
-static {
-    //JNITest为生成的so文件名
-    System.loadLibrary(&quot;JNITest&quot;);
-}
-
-public native static String get();
-
-public native static int set(int a);
-
-}
-</code></pre>
       
     </div>
     
@@ -426,9 +404,11 @@ public native static int set(int a);
       
         <div class="post-tags">
           
-            <a href="/hjyBlogs/tags/android/" rel="tag"># android</a>
+            <a href="/hjyBlogs/tags/java/" rel="tag"># java</a>
           
-            <a href="/hjyBlogs/tags/ndk/" rel="tag"># ndk</a>
+            <a href="/hjyBlogs/tags/thread-pool/" rel="tag"># thread pool</a>
+          
+            <a href="/hjyBlogs/tags/线程池/" rel="tag"># 线程池</a>
           
         </div>
       
@@ -441,8 +421,8 @@ public native static int set(int a);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hjyBlogs/2018/12/25/Android学习笔记/" rel="next" title="Android学习笔记">
-                <i class="fa fa-chevron-left"></i> Android学习笔记
+              <a href="/hjyBlogs/2020/05/19/EasyCode代码生成/" rel="next" title="EasyCode代码生成">
+                <i class="fa fa-chevron-left"></i> EasyCode代码生成
               </a>
             
           </div>
@@ -451,8 +431,8 @@ public native static int set(int a);
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hjyBlogs/2020/05/19/EasyCode代码生成/" rel="prev" title="EasyCode代码生成">
-                EasyCode代码生成 <i class="fa fa-chevron-right"></i>
+              <a href="/hjyBlogs/2020/05/20/一些比较常用的笔记/" rel="prev" title="一些比较常用的笔记">
+                一些比较常用的笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -585,7 +565,7 @@ public native static int set(int a);
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境配置"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发流程"><span class="nav-number">2.</span> <span class="nav-text">开发流程</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用线程池"><span class="nav-number">1.</span> <span class="nav-text">为什么要使用线程池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池的基本使用"><span class="nav-number">2.</span> <span class="nav-text">线程池的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造线程池的参数"><span class="nav-number">3.</span> <span class="nav-text">构造线程池的参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#corePoolSize-gt-核心线程数量"><span class="nav-number">3.1.</span> <span class="nav-text">corePoolSize =&gt; 核心线程数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#maximumPoolSize-gt-最大线程数量"><span class="nav-number">3.2.</span> <span class="nav-text">maximumPoolSize =&gt; 最大线程数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#keepAliveTime-gt-核心线程闲置超时时长"><span class="nav-number">3.3.</span> <span class="nav-text">keepAliveTime =&gt; 核心线程闲置超时时长</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#workQueue-gt-任务队列"><span class="nav-number">3.4.</span> <span class="nav-text">workQueue =&gt; 任务队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#threadFactory-gt-线程工厂，"><span class="nav-number">3.5.</span> <span class="nav-text">threadFactory =&gt; 线程工厂，</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#handler-gt-拒绝策略，"><span class="nav-number">3.6.</span> <span class="nav-text">handler =&gt; 拒绝策略，</span></a></li></ol></li></ol></div>
             
 
           </div>

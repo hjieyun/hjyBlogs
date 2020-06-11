@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="android,ndk,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -79,18 +79,16 @@
 
 
 
-<meta name="description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
-<meta name="keywords" content="android,ndk">
-<meta property="og:type" content="article">
-<meta property="og:title" content="android-NDK学习">
-<meta property="og:url" content="https://hjieyun.github.io/hjyBlogs/2019/03/18/android-NDK学习/index.html">
+<meta name="description" content="hjy个人博客，主要涉及android开发知识共享、实践教程、学习等方面">
+<meta property="og:type" content="website">
+<meta property="og:title" content="hjyBlog">
+<meta property="og:url" content="https://hjieyun.github.io/hjyBlogs/page/2/index.html">
 <meta property="og:site_name" content="hjyBlog">
-<meta property="og:description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
+<meta property="og:description" content="hjy个人博客，主要涉及android开发知识共享、实践教程、学习等方面">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-05-20T01:53:30.055Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="android-NDK学习">
-<meta name="twitter:description" content="前几天开始学习andoid的ndk开发，做的一个demo。主要参考了Young_Time的文档">
+<meta name="twitter:title" content="hjyBlog">
+<meta name="twitter:description" content="hjy个人博客，主要涉及android开发知识共享、实践教程、学习等方面">
 
 
 
@@ -120,13 +118,13 @@
 
 
 
-  <link rel="canonical" href="https://hjieyun.github.io/hjyBlogs/2019/03/18/android-NDK学习/">
+  <link rel="canonical" href="https://hjieyun.github.io/hjyBlogs/page/2/">
 
 
 
 
 
-  <title>android-NDK学习 | hjyBlog</title>
+  <title>hjyBlog</title>
   
 
 
@@ -145,7 +143,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -238,9 +237,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -253,7 +252,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2019/03/18/android-NDK学习/">
+    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2018/12/19/android定位服务相关/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="hjy">
@@ -270,7 +269,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">android-NDK学习</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hjyBlogs/2018/12/19/android定位服务相关/" itemprop="url">android定位服务相关</a></h1>
         
 
         <div class="post-meta">
@@ -282,8 +283,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-18T10:22:23+08:00">
-                2019-03-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-19T10:18:16+08:00">
+                2018-12-19
               </time>
             
 
@@ -342,74 +343,17 @@
       
 
       
-        <p>前几天开始学习andoid的ndk开发，做的一个demo。主要参考了<a href="https://blog.csdn.net/young_time/article/details/80346631" target="_blank" rel="noopener">Young_Time的文档</a></p>
-<a id="more"></a>
-<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p>  1、ndk的环境配置很简单，在Android studio中加载 NDK 和 LLDB 插件。</p>
-<p>  2、下载完成后，打开 File – Project Structure – SDK Location，然后选择 Android NDK location，点击 Select default NDK ，选择ndk路径即可。</p>
-<p>  3、打开 File – Settings – Plugins，将 Android NDK Support 后面的勾去掉，重启Android studio.</p>
-<h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><p>  1、创建native方法接口</p>
-<pre><code>public class JNITest {
-
-public native static String get();
-
-public native static int set(int a);
-
-}
-</code></pre><p>  2、选择 build – make project 生成 JNITest.class文件， 并且进入项目的  app\build\intermediates\classes\debug\ 下找到JNITest.class文件</p>
-<p>  3、使用android命令管理工具Terminal，进入app/src/main路径，使用以下语句生成 .h文件</p>
-<pre><code>javah -d jni -classpath D:\environment\Workspace\Android\androidWorkspace_practice\HJY_Demo_20181227\app\build\intermediates\classes\debug com.demo.hjydemo.common.jni.JNITest
-</code></pre><p>  javah ：   生成头文件</p>
-<p>  -d jni ：  当前目录下创建一个 jni 文件夹</p>
-<p>  D:\ … \debug ：    debug文件所在本地文件路径（路径很长，可以在项目中复制路径）</p>
-<p>  com.demo.hjydemo.common.jni.JNITest ：   JNITest.java所在路径</p>
-<p>  4、 执行语句后会在 app\src\main\jni 路径生成一个c语言的头文件com_demo_hjydemo_common_jni_JNITest.h，在该路径下创建一个 c/c++ resource 文件 test.c。并从com_demo_hjydemo_common_jni_JNITest.h文件复制方法到test.c中实现其逻辑。</p>
-<pre><code>#include&lt;jni.h&gt;
-#include&lt;stdio.h&gt;
-//导入我们创建的头文件
-#include &quot;com_demo_hjydemo_common_jni_JNITest.h&quot;
-
-
-//返回一个字符串
-JNIEXPORT jstring JNICALL Java_com_demo_hjydemo_common_jni_JNITest_get
-(JNIEnv *env, jclass jclass){
-    return (*env)-&gt;NewStringUTF(env,&quot;This is my first NDK Application&quot;);
-}
-
-
-//传入数字+1
-JNIEXPORT jint JNICALL Java_com_demo_hjydemo_common_jni_JNITest_set
-(JNIEnv *env, jclass jclass,jint a){
-
-return a+1;
-
-}
-</code></pre><p>  5、然后在app\src\main\jni目录下创建两个.mk文件。</p>
-<p>  一个 Android.mk:</p>
-<pre><code>LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := JNITest
-LOCAL_SRC_FILES := test.c
-include $(BUILD_SHARED_LIBRARY)
-</code></pre><p>  一个是 Application.mk：</p>
-<pre><code>APP_ABI := all
-</code></pre><p>  6、打开 Terminal，到 app/src/main/jni 目录下，使用 ndk-build 命令生成 so 库：</p>
-<pre><code>ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application APP_BUILD_SCRIPT=Android
-</code></pre><p>  7、在创建的JNITest中导入so库</p>
-<pre><code>public class JNITest {
-
-// 动态导入 so 库
-static {
-    //JNITest为生成的so文件名
-    System.loadLibrary(&quot;JNITest&quot;);
-}
-
-public native static String get();
-
-public native static int set(int a);
-
-}
+        
+          <h3 id="定位服务是否开启"><a href="#定位服务是否开启" class="headerlink" title="定位服务是否开启"></a>定位服务是否开启</h3><pre><code>判断定位服务是否开启,未开启则弹框询问是否开启，否则直接定位
 </code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/hjyBlogs/2018/12/19/android定位服务相关/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
     
@@ -424,42 +368,14 @@ public native static int set(int a);
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/hjyBlogs/tags/android/" rel="tag"># android</a>
-          
-            <a href="/hjyBlogs/tags/ndk/" rel="tag"># ndk</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/hjyBlogs/2018/12/25/Android学习笔记/" rel="next" title="Android学习笔记">
-                <i class="fa fa-chevron-left"></i> Android学习笔记
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hjyBlogs/2020/05/19/EasyCode代码生成/" rel="prev" title="EasyCode代码生成">
-                EasyCode代码生成 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -469,11 +385,258 @@ public native static int set(int a);
   </article>
 
 
+    
+      
 
-    <div class="post-spread">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2018/12/19/你好，欢迎来到我的博客/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hjy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hjyBlogs/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hjyBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hjyBlogs/2018/12/19/你好，欢迎来到我的博客/" itemprop="url">你好，欢迎来到我的博客</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-19T10:00:45+08:00">
+                2018-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>你好，欢迎来到我的博客，本人的博客仅用于记录和分享学习和工作是使用到的技术，如果您发现本博客中有涉嫌侵权的内容，欢迎发送邮件到： <a href="mailto:xingguangzhijian@sina.com" target="_blank" rel="noopener">xingguangzhijian@sina.com</a> 。若属实，本人立即删除。</p>
+
+          
+        
       
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hjieyun.github.io/hjyBlogs/hjyBlogs/2018/12/19/hello-world/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hjy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hjyBlogs/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hjyBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hjyBlogs/2018/12/19/hello-world/" itemprop="url">Hello World</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-19T09:55:22+08:00">
+                2018-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>欢迎来到<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>!这是你的第一篇文章。查看<a href="https://hexo.io/docs/" target="_blank" rel="noopener">文档</a> 以获取更多信息. 如果您在使用Hexo时遇到任何问题，可以在<a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">故障排除中</a> 或者您可以在<a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>上询问我.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/hjyBlogs/2018/12/19/hello-world/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/hjyBlogs/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hjyBlogs/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -481,10 +644,6 @@ public native static int set(int a);
 
 
           
-
-  
-
-
 
         </div>
         
@@ -505,17 +664,8 @@ public native static int set(int a);
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -575,22 +725,6 @@ public native static int set(int a);
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境配置"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发流程"><span class="nav-number">2.</span> <span class="nav-text">开发流程</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -738,10 +872,6 @@ public native static int set(int a);
 
 
   
-  <script type="text/javascript" src="/hjyBlogs/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/hjyBlogs/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 
